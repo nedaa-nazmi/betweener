@@ -28,7 +28,7 @@ class SecondaryButtonWidget extends StatelessWidget {
               text,
               style: const TextStyle(
                   color: kOnSecondaryColor,
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500),
             ),
           ),

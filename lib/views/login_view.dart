@@ -1,7 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tt9_betweener_challenge/assets.dart';
+import 'package:tt9_betweener_challenge/controller/login_controller.dart';
+import 'package:tt9_betweener_challenge/models/users.dart';
 import 'package:tt9_betweener_challenge/views/main_app_view.dart';
 import 'package:tt9_betweener_challenge/views/register_view.dart';
 import 'package:tt9_betweener_challenge/views/widgets/custom_text_form_field.dart';
@@ -23,6 +26,30 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  void submit() {
+    if (_formKey.currentState!.validate()) {
+      final body = {
+        'email': emailController.text,
+        'password': passwordController.text
+      };
+      login(body).then((user) async {
+        print(user.token);
+        //save user locally
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', usersToJson(user));
+        if (mounted) {
+          Navigator.pushNamed(context, MainAppView.id);
+        }
+      }).catchError((err) {
+        //snackBar in android studio
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(err.toString()),
+          backgroundColor: Colors.red,
+        ));
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +104,7 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(
                     height: 24,
                   ),
-                  SecondaryButtonWidget(
-                      onTap: () {
-                        if (_formKey.currentState!.validate()) {
-                          Navigator.pushNamed(context, MainAppView.id);
-                        }
-                      },
-                      text: 'LOGIN'),
+                  SecondaryButtonWidget(onTap: submit, text: 'LOGIN'),
                   const SizedBox(
                     height: 24,
                   ),
