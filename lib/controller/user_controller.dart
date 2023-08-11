@@ -36,21 +36,30 @@ Future<Users> getLocalUser() async {
   // Users.fromJson(prefs.containsKey('user'));
 }
 
-Future<List<User>> getUserByName(Map<String, String> body) async {
+Future<List<User>> getUserByName(String name) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   Users user = usersFromJson(prefs.getString('user')!);
-  final response = await http.post(Uri.parse(searchUrl),
-      headers: {'Authorization': 'Bearer ${user.token}'}, body: body);
+  final response = await http.post(
+    Uri.parse(searchUrl),
+    headers: {'Authorization': 'Bearer ${user.token}'},
+    body: {'name': name},
+  );
   print(response.body); //name
   if (response.statusCode == 200) {
-    final data = jsonDecode(response.body)['user'] as List<dynamic>;
-    return data.map((e) => User.fromJson(e)).toList();
+    final List<dynamic> data = jsonDecode(response.body)['user'];
+    List<User> userList = data.map((e) => User.fromJson(e)).toList();
+
+    List<User> filterUser = userList
+        .where((user) => user.name != null && user.name!.contains(name))
+        .toList();
+
+    return filterUser;
   } else {
     throw Exception("Failed to found name");
   }
 }
 
-Future<Users?> addFollowers(Map<String, String> body) async {
+Future<User?> addFollowers(Map<String, String> body) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   Users user = usersFromJson(prefs.getString('user')!);
   final response = await http.post(Uri.parse(followUrl),
@@ -59,7 +68,7 @@ Future<Users?> addFollowers(Map<String, String> body) async {
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body)['followee_id'];
     print(data);
-    return Users.fromJson(data);
+    return User.fromJson(data);
   } else {
     throw Exception("Failed to add follower");
   }

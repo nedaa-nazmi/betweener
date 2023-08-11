@@ -24,26 +24,20 @@ class _AddLinkState extends State<Add_Link_View> {
   TextEditingController linkController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void submitLink() {
-    if (_formKey.currentState!.validate()) {
-      final body = {'title': titleController.text, 'link': linkController.text};
-      addLink(body).then((link) async {
-        print(body);
-        //save user locally
-        // final SharedPreferences prefs = await SharedPreferences.getInstance();
-        // await prefs.setString('user', linksToJson(link));
-        if (mounted) {
-          Navigator.pushNamed(context, ProfileView.id);
-        }
-      }).catchError((err) {
-        //snackBar in android studio
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(err.toString()),
-          backgroundColor: Colors.red,
-        ));
-      });
-    }
-  }
+  // void submitLink() {
+  //   if (_formKey.currentState!.validate()) {
+  //     final body = {'title': titleController.text, 'link': linkController.text};
+  //     addLink(body).then((link) async {
+  //       print(body);
+  //     }).catchError((err) {
+  //       //snackBar in android studio
+  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //         content: Text(err.toString()),
+  //         backgroundColor: Colors.red,
+  //       ));
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +87,7 @@ class _AddLinkState extends State<Add_Link_View> {
             SizedBox(
               height: 10,
             ),
-            SecondaryButtonWidget(onTap: submitLink, text: 'Add'),
+            // SecondaryButtonWidget(onTap: submitLink, text: 'Add'),
           ],
         ),
       ),

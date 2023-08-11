@@ -6,6 +6,7 @@ const loginUrl = '$baseUrl/login';
 const linkUrl = '$baseUrl/links';
 const followUrl = '$baseUrl/follow';
 const searchUrl = '$baseUrl/search';
+const registerUrl = '$baseUrl/register';
 // ============= STYLE CONSTS ==============
 
 const kScaffoldColor = Color(0xffFDFDFD);
