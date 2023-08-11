@@ -36,13 +36,13 @@ Future<Users> getLocalUser() async {
   // Users.fromJson(prefs.containsKey('user'));
 }
 
-Future<List<User>> getUserByName(String name) async {
+Future<List<User>> getUserByName(String nameFollower) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   Users user = usersFromJson(prefs.getString('user')!);
   final response = await http.post(
     Uri.parse(searchUrl),
     headers: {'Authorization': 'Bearer ${user.token}'},
-    body: {'name': name},
+    body: {'name': nameFollower},
   );
   print(response.body); //name
   if (response.statusCode == 200) {
@@ -50,7 +50,7 @@ Future<List<User>> getUserByName(String name) async {
     List<User> userList = data.map((e) => User.fromJson(e)).toList();
 
     List<User> filterUser = userList
-        .where((user) => user.name != null && user.name!.contains(name))
+        .where((user) => user.name != null && user.name!.contains(nameFollower))
         .toList();
 
     return filterUser;
